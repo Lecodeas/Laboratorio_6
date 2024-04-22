@@ -19,8 +19,7 @@
 
 //VARIABLES GLOBALES
 //Otras variables
-uint8_t received_rx = 0;
-uint8_t contador_char = 0; //Para comprobar que se envían diferentes caracteres, usaré un contador
+volatile uint8_t received_rx = 0;
 
 //PROTOTIPOS DE FUNCIÓN
 void setup(void);
@@ -31,7 +30,7 @@ void enviarchar(char Caracter);
 
 ISR(USART_RX_vect){
 	received_rx = UDR0; //Recibo el dato en una variable que despliego en la salida apropiada
-	PORTB |= (received_rx);
+	PORTB = (received_rx); //Output en B
 }
 
 //PRINCIPAL
@@ -44,8 +43,11 @@ int main(void)
 
 	while (1)
 	{
-		enviarchar(contador_char);
-		enviarchar("\n");
+		enviarchar('H');
+		enviarchar('o');
+		enviarchar('l');
+		enviarchar('a');
+		enviarchar('\n');
 		_delay_ms(1000);
 	}// Fin Main Loop
 }
@@ -73,7 +75,7 @@ void setupUART(void){
 	
 	UCSR0B |= (1<<RXCIE0)|(1<<RXEN0)|(1<<TXEN0); //Rx int. | Rxen | Txen
 	
-	UCSR0C |= (1>>UCSZ00); //Async. | No parity | 1 stop | 6 data 
+	UCSR0C |= (1>>UCSZ01)|(1>>UCSZ00); //Async. | No parity | 1 stop | 8 data 
 	
 	UBRR0 = 103; //Baud 9600
 }
