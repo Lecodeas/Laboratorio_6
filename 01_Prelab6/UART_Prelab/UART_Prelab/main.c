@@ -44,10 +44,6 @@ int main(void)
 	while (1)
 	{
 		enviarchar('H');
-		enviarchar('o');
-		enviarchar('l');
-		enviarchar('a');
-		enviarchar('\n');
 		_delay_ms(1000);
 	}// Fin Main Loop
 }
