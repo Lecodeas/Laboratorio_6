@@ -24,6 +24,7 @@ volatile uint8_t rx_leido;
 void setup(void);
 void setupUART(void);
 void enviarChar(char Caracter);
+void enviarString(char* Texto);
 
 //PRINCIPAL
 int main(void)
@@ -33,17 +34,7 @@ int main(void)
     setupUART();
 	sei();
 	
-	enviarChar('H');
-	enviarChar('o');
-	enviarChar('l');
-	enviarChar('a');
-	enviarChar(' ');
-	enviarChar('m');
-	enviarChar('u');
-	enviarChar('n');
-	enviarChar('d');
-	enviarChar('o');
-	enviarChar('\n');
+	enviarString("Hola Mundo!@");
     while (1) 
     {
 		
@@ -84,16 +75,23 @@ void setupUART(void){
 }
 
 void enviarChar(char Caracter){
-	while (!(UCSR0A & (1<<UDRE0)));
+	while (!(UCSR0A & (1<<UDRE0))); //Hasta que esté vacío puedo enviar el dato
 	UDR0 = Caracter;
 }
 
+void enviarString(char* Texto){
+	uint8_t i; //Contador para array de texto
+	for(i = 0; Texto[i] != '\0'; i++){
+		//Mientras el caracter no sea nulo, se envía
+		enviarChar(Texto[i]);
+	}
+}
 
 //INTERRUPCIONES
 
 ISR(USART_RX_vect){
-	rx_leido = UDR0;
-	PORTB = rx_leido;
-	PORTC = (rx_leido>>6); //Shifteado para los primeros 2 bits
+	rx_leido = UDR0; //Temporal para el leído
+	PORTB = rx_leido; //Primeros 6 bits
+	PORTC = (rx_leido>>6); //Shifteado para los últimos 2 bits
 }
 
